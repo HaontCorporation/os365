@@ -12,7 +12,6 @@ void reboot()
 void nop()
 {}
 void fsinit();
-file textFiles[512];
 void textEdit()
 {
 	drawmain();
@@ -70,7 +69,6 @@ void textEdit()
 						goToPos(terminal_column-1,terminal_row);
 						terminal_putchar(' ');
 						goToPos(terminal_column-1,terminal_row);
-						textFiles[tfNum].contents[charNum] = 0;
 						charNum--;
 					}
 				}
@@ -95,7 +93,6 @@ void textEdit()
 				curposY++;
 				curposX = 0;
 				goToPos(editor.x+1+curposX,editor.x+2+curposY);
-				textFiles[tfNum].contents[charNum] = '\n';
 				goto skip2;
 			}
 			if(c>0)
@@ -327,11 +324,7 @@ void gomenu()
 					goToPos(goMenu.x+1,goMenu.y+7);
 					kprint("Reboot");
 					goToPos(goMenu.x+1,goMenu.y+8);
-					kprint("File Manager");
-					goToPos(goMenu.x+1,goMenu.y+9);
 					kprint("Text Editor");
-					goToPos(goMenu.x+1,goMenu.y+10);
-					kprint("Calculator");
 					goToPos(goMenu.x+1,goMenu.y+2+selection);
 					terminal_setcolor(52);
 					switch(selection)
@@ -413,7 +406,7 @@ void gomenu()
 		{
 		reboot(); break;
 		}
-		case 7:
+		case 6:
 		{
 		textEdit(); break;
 		}
