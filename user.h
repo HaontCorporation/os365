@@ -333,8 +333,11 @@ void gomenu()
 					kprint("Reboot");
 					goToPos(goMenu.x+1,goMenu.y+8);
 					kprint("Text Editor");
+<<<<<<< HEAD
 					goToPos(goMenu.x+1,goMenu.y+9);
 					kprint("Shutdown");
+=======
+>>>>>>> origin/master
 					goToPos(goMenu.x+1,goMenu.y+2+selection);
 					terminal_setcolor(52);
 					switch(selection)
