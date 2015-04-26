@@ -78,6 +78,18 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 }
 void terminal_putchar(char c)
 {
+	char nums[10];
+	nums[0] = '0';
+	nums[1] = '1';
+	nums[2] = '2';
+	nums[3] = '3';
+	nums[4] = '4';
+	nums[5] = '5';
+	nums[6] = '6';
+	nums[7] = '7';
+	nums[8] = '8';
+	nums[9] = '9';
+
 	if(c != '\n')
 	{
 		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
@@ -86,6 +98,20 @@ void terminal_putchar(char c)
 	{
 		terminal_column = 0 - 1;
 		terminal_row++;
+	}
+	switch(c)
+	{
+	case 0: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 1: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 2: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 3: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 4: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 5: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 6: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 7: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 8: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+	case 9: terminal_putentryat(nums[(int)c], terminal_color, terminal_column, terminal_row);
+
 	}
 	if(++terminal_column == VGA_WIDTH)
 	{
@@ -108,6 +134,11 @@ void goToPos(int x, int y)
 	terminal_column = x;
 	terminal_row = y;
 	update_cursor(terminal_row,terminal_column);
+}
+void terminal_write(const char* data, size_t size)
+{
+	for ( size_t i = 0; i < size; i++ )
+		terminal_putchar(data[i]);
 }
 void terminal_writestring(const char* data)
 {

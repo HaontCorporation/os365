@@ -5,11 +5,13 @@
 #endif
 #include "vgaterm.h" //VGA text driver
 #include "panic.h" //kernel panic
+#include "decls.h"
 #include "graphics.h" //not used yet, will be used for GUI
 #include "io.h" //I/O ports
 #include "ring3.h" //not used now
-#include "os365.h" 
 #include "paging.h"
+#include "hdd.h"
+#include "os365.h"
 #if defined(__linux__)
 #error "Compiling is not allowed without the cross-compiler"
 #endif
@@ -18,6 +20,7 @@ extern "C"
 #endif
 void kernel_main()
 {
+	asm("sti");
 	terminal_initialize(); //terminal initialization
 	/*
 	gdt_entry_bits *code;
@@ -47,7 +50,6 @@ void kernel_main()
 	write_tss(&gdt[5]); //we'll implement this function later... 
 	_jump_usermode();
 	*/
-	read_rtc();
 //	createpage();
 //	loadPageDirectory(page_directory);
 //	enablePaging();

@@ -80,7 +80,6 @@ void write_tss(gdt_entry_bits *g)
    g->base_high=(base&0xFF000000)>>24; //isolate top byte.
  
    // Ensure the TSS is initially zero'd.
-   memset(&tss_entry, 0, sizeof(tss_entry));
  
    tss_entry.ss0  = 0;  // Set the kernel stack segment.
    tss_entry.esp0 = 0; // Set the kernel stack pointer.

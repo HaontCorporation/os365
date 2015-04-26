@@ -2,6 +2,9 @@
 #define __OS365_H
 #include "vgaterm.h"
 #include "user.h"
+#include "scrio.h"
+#include "zbase.h"
+#include "io.h"
 #define nostartwin false
 void cmd_handle(char * cmd)
 {

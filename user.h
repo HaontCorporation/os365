@@ -3,7 +3,11 @@
 #include "kbd.h"
 #include "vgaterm.h"
 #include "timer.h"
+#include "zbase.h"
+#include "scrio.h"
+#include "panic.h"
 #include "readDate.h"
+#include "stdlib/printf.h"
 void startZ(bool startwin);
 void reboot()
 {
@@ -12,7 +16,6 @@ void reboot()
 void nop()
 {}
 void fsinit();
-file textFiles[512];
 void textEdit()
 {
 	drawmain();
@@ -25,6 +28,7 @@ void textEdit()
 	window editor(71,23,3,2,"365 Editor","");
 	drawObj(editor);
 	printw("Press F5 to exit. Files cannot be saved today.",editor);
+	printf("Hello, %s!","World");
 	do
 	{
 		if(inb(0x60)!=c)
@@ -70,7 +74,6 @@ void textEdit()
 						goToPos(terminal_column-1,terminal_row);
 						terminal_putchar(' ');
 						goToPos(terminal_column-1,terminal_row);
-						textFiles[tfNum].contents[charNum] = 0;
 						charNum--;
 					}
 				}
@@ -95,7 +98,6 @@ void textEdit()
 				curposY++;
 				curposX = 0;
 				goToPos(editor.x+1+curposX,editor.x+2+curposY);
-				textFiles[tfNum].contents[charNum] = '\n';
 				goto skip2;
 			}
 			if(c>0)
@@ -226,17 +228,22 @@ void info()
 	drawmain();
 	window info(31,9,40,5,"OS365 Info","");
 	drawObj(info);
-	printw("OS365 ver. 1.0.1, kernel 1.0,\n Z Window System 1.0.\nRelease date: 12/04/15",info);
+	printw("OS365 ver. 1.0.1, kernel 1.0,\nZ Window System 1.0.\nRelease date: 12/04/15",info);
 	waitForKey(0x2D);
 	terminal_setcolor(COLOR_LIGHT_GREY + COLOR_BLACK);
 	startZ(true);
 }
+void shutdown()
+{
+	outw(0xB004, 0x0 | 0x2000);
+}
 void authors()
 {
 	drawmain();
-	window authors(35,8,40,5,"OS365 Authors","");
+	window authors(40,19,40,5,"OS365 Authors","");
 	drawObj(authors);
-	printw("Programming  Nikita Ivanov\n        Original OS name  Igor Ivanov\nZ Window System  Nikita Ivanov",authors);
+ 	printw("Programming  Nikita Ivanov\n       Original OS name  Igor Ivanov\nZ Window System  Nikita Ivanov\nSecond Developer  Roman Zhikharevich\nHelped  Mitrofan Iskra",authors);
+	terminal_putchar(3);
 	waitForKey(0x2D);
 	terminal_setcolor(COLOR_LIGHT_GREY + COLOR_BLACK);
 	startZ(true);
@@ -301,11 +308,9 @@ void gomenu()
 	goToPos(goMenu.x+1,goMenu.y+7);
 	kprint("Reboot");
 	goToPos(goMenu.x+1,goMenu.y+8);
-	kprint("File Manager");
-	goToPos(goMenu.x+1,goMenu.y+9);
 	kprint("Text Editor");
-	goToPos(goMenu.x+1,goMenu.y+10);
-	kprint("Calculator");
+	goToPos(goMenu.x+1,goMenu.y+9);
+	kprint("Shutdown");
 	goToPos(1,8);
 	terminal_setcolor(52);
 	kprint("OS Info");
@@ -327,11 +332,9 @@ void gomenu()
 					goToPos(goMenu.x+1,goMenu.y+7);
 					kprint("Reboot");
 					goToPos(goMenu.x+1,goMenu.y+8);
-					kprint("File Manager");
-					goToPos(goMenu.x+1,goMenu.y+9);
 					kprint("Text Editor");
-					goToPos(goMenu.x+1,goMenu.y+10);
-					kprint("Calculator");
+					goToPos(goMenu.x+1,goMenu.y+9);
+					kprint("Shutdown");
 					goToPos(goMenu.x+1,goMenu.y+2+selection);
 					terminal_setcolor(52);
 					switch(selection)
@@ -348,12 +351,14 @@ void gomenu()
 						kprint("Reboot"); break;
 						case 6:
 						kprint("Text Editor"); break;
+						case 7:
+						kprint("Shutdown"); break;
 					}
 				}
 			}
 			if(c == 0x50)
 			{
-				if(selection<6)
+				if(selection<7)
 				{
 					selection++;
 					terminal_setcolor(26);
@@ -365,6 +370,8 @@ void gomenu()
 					kprint("Reboot");
 					goToPos(goMenu.x+1,goMenu.y+8);
 					kprint("Text Editor");
+					goToPos(goMenu.x+1,goMenu.y+9);
+					kprint("Shutdown");
 					goToPos(goMenu.x+1,goMenu.y+2+selection);
 					terminal_setcolor(52);
 
@@ -382,6 +389,8 @@ void gomenu()
 						kprint("Reboot"); break;
 						case 6:
 						kprint("Text editor"); break;
+						case 7:
+						kprint("Shutdown"); break;
 					}
 				}
 			}
@@ -413,9 +422,13 @@ void gomenu()
 		{
 		reboot(); break;
 		}
-		case 7:
+		case 6:
 		{
 		textEdit(); break;
+		}
+		case 7:
+		{
+		shutdown(); break;
 		}
 	}
 }

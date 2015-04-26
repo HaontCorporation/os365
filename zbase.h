@@ -1,6 +1,7 @@
 #ifndef __ZBASE_H
 #define __ZBASE_H
 #include "vgaterm.h"
+#include "scrio.h"
 char scancode[] = "   1234567890-=^^qwertyuiop[]\n^asdfghjkl;'`  zxcvbnm,./^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^QWERTYUIOP{}\n^ASDFGHJKL:'^  ZXCVBNM<>?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
 class window {
 	public:
@@ -39,20 +40,6 @@ class button : public Widget {
 void printw(const char * msg, window wnd);
 bool drawObj(window target);
 void z_init();
-void delWin(window wnd)
-{
-	goToPos(wnd.x,wnd.y);
-	int newy = wnd.y;
-	for(int i = 10; i < wnd.height; i++)
-	{
-		for(int j = 10; j < wnd.width; j++)
-		{
-			kprint(" ");
-		}
-		newy--;
-		goToPos(wnd.x-wnd.width,newy);
-	}
-}
 void drawmain()
 {
 		terminal_setcolor(COLOR_LIGHT_GREY + COLOR_BLACK);

@@ -1,0 +1,35 @@
+#include "../vgaterm.h"
+int putchar(int ic)
+{
+	char c = (char) ic;
+	terminal_write(&c, sizeof(c));
+	return ic;
+}
+void print(const char * data, int count)
+{
+	for(int i; i < count; i++)
+	putchar(data[i]):
+}
+void nop_(){}
+int printf(const char * restrict format, const char * arg)
+{
+	int written = 0;
+	size_t amount;
+	bool rejected_bad_specifier = false;
+	for(int i; i < strlen(format); i++)
+	{
+		if(format[i] == '%')
+		{
+			if(format[i+1] == 's')
+			{
+				print(arg); goto finish;
+			}
+			else
+			goto no;
+		}
+		finish:
+		print(format[i]);
+		no:
+		nop_();
+	}
+}
