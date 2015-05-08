@@ -10,8 +10,8 @@ all:
 	cp os365.bin isodir/boot/os365.bin
 	grub-mkrescue -o os365.iso isodir > isomake.log
 	echo "done. Running in QEMU..."
-	qemu-system-i386 -cdrom os365.iso -serial file:serial.log
+	qemu-system-i386 -cdrom os365.iso
 clean:
 	rm *.o *.iso *.bin
 qemu:
-	qemu-system-i386 -cdrom os365.iso -serial file:serial.log
+	qemu-system-i386 -cdrom os365.iso

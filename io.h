@@ -4,15 +4,33 @@
 #define PIC2 0xA0
 #define ICW1 0x11
 #define ICW4 0x01
-static inline void outb(uint16_t port, uint8_t val)
+typedef unsigned char byte;
+typedef unsigned short word;
+typedef unsigned int dword;
+typedef unsigned long long int qword;
+char scancode[] = "   1234567890-=^^qwertyuiop[]\n^asdfghjkl;'`  zxcvbnm,./^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^QWERTYUIOP{}\n^ASDFGHJKL:'^  ZXCVBNM<>?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
+inline byte inb(word port)
 {
-	asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) );
+   byte r;
+   asm volatile(
+   ".intel_syntax noprefix\n\t"
+   "in al,dx\n\t"
+   ".att_syntax"
+   :"=a"(r)
+   :"d"(port)
+   );
+   return(r);
 }
-static inline uint8_t inb(uint16_t port)
+
+inline void outb(word port,byte val)
 {
-	uint8_t ret;
-	asm volatile ( "inb %1, %0" : "=a"(ret) : "Nd"(port) );
-	return ret;
+   asm volatile(
+   ".intel_syntax noprefix\n\t"
+   "out dx,al\n\t"
+   ".att_syntax"
+   :
+   :"d"(port),"a"(val)
+   );
 }
 static inline void outw(uint16_t port, uint16_t val)
 {
@@ -40,8 +58,19 @@ asm("cld; rep; insl" :: "D" (buffer), "d" (port), "c" (count));
 }
 int getch()
 {
-	int ret = inb(0x60);
-	return ret;
+	char c = 0;
+	do
+	{
+		if(inb(0x60)!=c)
+		{
+			c = inb(0x60);
+			if(c>0)
+			{
+				return scancode[c+1];
+			}
+		}
+	}
+	while(c!=1);
 }
 void init_pics(int pic1, int pic2)
 {

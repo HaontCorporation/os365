@@ -6,12 +6,13 @@
 #include "vgaterm.h" //VGA text driver
 #include "panic.h" //kernel panic
 #include "decls.h"
-#include "graphics.h" //not used yet, will be used for GUI
 #include "io.h" //I/O ports
 #include "ring3.h" //not used now
 #include "paging.h"
 #include "hdd.h"
 #include "os365.h"
+#include "scrio.h"
+#include "fonts.h"
 #if defined(__linux__)
 #error "Compiling is not allowed without the cross-compiler"
 #endif
@@ -20,8 +21,10 @@ extern "C"
 #endif
 void kernel_main()
 {
-	asm("sti");
-	terminal_initialize(); //terminal initialization
+	setupFonts();
+	kprint("OS365 Kernel 1.0 is loaded.\nInitializing PIC...",0,0);
+	init_pics(0x20,0x28);
+	kprint("\nAll pre-start processes are finished. Preparing to load shell...\n",0,8);
 	/*
 	gdt_entry_bits *code;
 	gdt_entry_bits *data;
@@ -53,5 +56,6 @@ void kernel_main()
 //	createpage();
 //	loadPageDirectory(page_directory);
 //	enablePaging();
+	setGraphicsMode();
 	shellStart();
 }

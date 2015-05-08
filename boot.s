@@ -17,7 +17,6 @@ stack_top:
 _start:
 movl $stack_top, %esp
 call kernel_main
-cli
 hlt
 .Lhang:
 jmp .Lhang
